@@ -1,0 +1,44 @@
+{
+  "name": "b-async-website",
+  "version": "1.0.0",
+  "description": "b-async - Yenilikçi Yazılım Çözümleri | Innovative Software Solutions",
+  "main": "index.html",
+  "scripts": {
+    "minify:js": "terser js/script.js -o js/script.min.js -c -m",
+    "minify:css": "cssnano style/main.css -o style/main.min.css",
+    "minify:html": "html-minifier --input-dir . --output-dir dist --file-ext html --collapse-whitespace --remove-comments --minify-js true --minify-css true",
+    "build": "npm run minify:js && npm run minify:css",
+    "build:all": "npm run minify:js && npm run minify:css && npm run minify:html",
+    "start": "http-server",
+    "server": "python -m http.server 8000",
+    "analyze": "echo 'Security analysis:' && npm run size",
+    "size": "echo 'File sizes:' && du -sh js/* style/* && echo 'Minified sizes:' && du -sh js/*.min.js style/*.min.css 2>/dev/null || echo 'Run build first'",
+    "security:check": "echo 'Check SECURITY.md for security guidelines'"
+  },
+  "keywords": [
+    "software",
+    "development",
+    "b-async",
+    "yazılım",
+    "çözüm"
+  ],
+  "author": "b-async Team",
+  "license": "MIT",
+  "devDependencies": {
+    "cssnano-cli": "^3.0.0",
+    "html-minifier": "^4.0.0",
+    "terser": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/AsyncX_WebSite_solution.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/AsyncX_WebSite_solution/issues"
+  },
+  "homepage": "https://b-async.com"
+}

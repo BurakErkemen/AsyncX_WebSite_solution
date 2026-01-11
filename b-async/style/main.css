@@ -1,0 +1,596 @@
+/* ============================================
+   b-async Website - Main Stylesheet
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
+
+/* ============================================
+   CSS Variables & Design Tokens
+   ============================================ */
+
+:root {
+    --space-blue: #0a1a2f;
+    --cosmic-purple: #6c3fd1;
+    --stellar-gold: #ffd700;
+    --glass-accent: #aee1f9;
+    --glass-bg: rgba(20, 30, 50, 0.7);
+    --gradient: linear-gradient(135deg, #0a1a2f 0%, #6c3fd1 100%);
+    --font-main: "Orbitron", Arial, sans-serif;
+    --transition: 0.3s cubic-bezier(0.77, 0, 0.18, 1);
+    --glow: 0 0 16px var(--glass-accent), 0 0 32px var(--cosmic-purple);
+    --slide-width: 320px;
+    --slide-height: 220px;
+    --carousel-radius: 420px;
+    --carousel-perspective: 1200px;
+    --cursor-size: 32px;
+    --nav-size: 48px;
+    --dot-size: 16px;
+    --loading-bg: #0a1a2f;
+    --loading-fg: var(--glass-accent);
+}
+
+/* ============================================
+   General Reset & Layout
+   ============================================ */
+
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-main);
+    background: var(--gradient);
+    color: #fff;
+    overflow-x: hidden;
+    min-height: 100vh;
+    scroll-behavior: smooth;
+}
+
+body {
+    position: relative;
+    min-height: 100vh;
+    background: var(--gradient);
+    transition: background 0.6s;
+}
+
+/* ============================================
+   Loading Screen
+   ============================================ */
+
+#loading-screen {
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: var(--loading-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: opacity 0.6s;
+}
+
+#loading-progress {
+    width: 220px;
+    height: 8px;
+    background: #222;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 24px;
+}
+
+#loading-bar {
+    width: 0;
+    height: 100%;
+    background: var(--loading-fg);
+    transition: width 0.3s;
+}
+
+/* ============================================
+   Background Effects
+   ============================================ */
+
+#starfield,
+#particles {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ============================================
+   Carousel Container
+   ============================================ */
+
+#carousel-container {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    perspective: var(--carousel-perspective);
+    overflow: visible;
+    padding: 80px 0 40px 0;
+    margin-top: 0;
+}
+
+#stellar-carousel {
+    position: relative;
+    width: 100vw;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: var(--carousel-perspective);
+    margin-bottom: 20px;
+    user-select: none;
+    touch-action: pan-x pan-y;
+}
+
+/* ============================================
+   Carousel Slide
+   ============================================ */
+
+.carousel-slide {
+    position: absolute;
+    width: var(--slide-width);
+    height: var(--slide-height);
+    background: var(--glass-bg);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), var(--glow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition), box-shadow var(--transition),
+                opacity var(--transition), filter var(--transition);
+    opacity: 0.7;
+    filter: blur(0.5px);
+    will-change: transform, opacity, filter;
+    outline: none;
+    overflow: hidden;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+    filter: none;
+    box-shadow: 0 0 32px var(--glass-accent), 0 0 48px var(--cosmic-purple);
+    transform: scale(1.08);
+    z-index: 3;
+}
+
+.carousel-slide:focus {
+    outline: 2px solid var(--glass-accent);
+}
+
+/* ============================================
+   Slide Content
+   ============================================ */
+
+.slide-title {
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    color: var(--glass-accent);
+    text-shadow: 0 2px 8px var(--cosmic-purple);
+    text-align: center;
+    padding: 0 10px;
+}
+
+.slide-desc {
+    font-size: 0.9rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 8px;
+    text-shadow: 0 1px 4px #222;
+    padding: 0 12px;
+    line-height: 1.3;
+}
+
+.slide-icon {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 8px var(--cosmic-purple));
+}
+
+/* ============================================
+   Navigation Controls
+   ============================================ */
+
+#carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 15px;
+    z-index: 4;
+}
+
+.nav-btn {
+    width: 42px;
+    height: 42px;
+    background: var(--glass-bg);
+    border: none;
+    border-radius: 50%;
+    color: var(--glass-accent);
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px #222;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    outline: none;
+}
+
+.nav-btn:hover,
+.nav-btn:focus {
+    background: var(--cosmic-purple);
+    color: #fff;
+    box-shadow: 0 0 24px var(--glass-accent);
+    transform: scale(1.08);
+}
+
+/* ============================================
+   Dot Navigation
+   ============================================ */
+
+#dot-nav {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    z-index: 4;
+    flex-wrap: wrap;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #222;
+    border: 2px solid var(--cosmic-purple);
+    box-shadow: 0 0 8px var(--cosmic-purple);
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s, transform 0.2s;
+    outline: none;
+}
+
+.dot.active {
+    background: var(--glass-accent);
+    border-color: var(--glass-accent);
+    transform: scale(1.2);
+    box-shadow: 0 0 16px var(--glass-accent);
+}
+
+/* ============================================
+   Custom Cursor
+   ============================================ */
+
+#custom-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    width: var(--cursor-size);
+    height: var(--cursor-size);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glass-accent) 60%, transparent 100%);
+    box-shadow: 0 0 24px var(--cosmic-purple);
+    opacity: 0.8;
+    transition: transform 0.1s, opacity 0.2s;
+    will-change: transform;
+    mix-blend-mode: lighten;
+}
+
+/* ============================================
+   Navigation
+   ============================================ */
+
+nav.fixed {
+    z-index: 1000 !important;
+}
+
+/* ============================================
+   Hero Section Info
+   ============================================ */
+
+.hero-info {
+    z-index: 10;
+    position: relative;
+    text-align: center;
+    margin-top: 0;
+    padding: 0 20px;
+}
+
+/* ============================================
+   Service Cards
+   ============================================ */
+
+.service-card {
+    background-color: rgba(31, 41, 55, 0.5);
+    padding: 2rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(55, 65, 81, 1);
+    transition: all 0.3s ease;
+}
+
+.service-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.service-card p {
+    font-size: 0.875rem;
+    color: #d1d5db;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.service-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.service-card li {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* ============================================
+   Mobile Menu
+   ============================================ */
+
+.mobile-menu {
+    display: none;
+}
+
+.mobile-menu.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    border-top: 1px solid rgba(100, 116, 139, 0.3);
+    z-index: 1000;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+/* Mobile First - max-width: 640px */
+@media (max-width: 640px) {
+    :root {
+        --carousel-radius: 180px;
+        --slide-width: 140px;
+        --slide-height: 100px;
+    }
+
+    #stellar-carousel {
+        height: 200px;
+    }
+
+    .slide-title {
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+        padding: 0 8px;
+    }
+
+    .slide-desc {
+        font-size: 0.65rem;
+        line-height: 1.2;
+        padding: 0 8px;
+    }
+
+    .slide-icon {
+        font-size: 1.2rem;
+        margin-bottom: 6px;
+    }
+
+    .carousel-slide {
+        border-radius: 12px;
+    }
+
+    .nav-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.4rem;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+    }
+
+    #carousel-container {
+        padding: 60px 0 30px 0;
+        min-height: 50vh;
+    }
+
+    .hero-info {
+        padding: 0 16px;
+    }
+
+    .hero-info h1 {
+        font-size: 1.8rem !important;
+        line-height: 1.2;
+        margin-bottom: 12px !important;
+    }
+
+    .hero-info p {
+        font-size: 0.95rem !important;
+        line-height: 1.4;
+        margin-bottom: 20px !important;
+    }
+
+    .cta-buttons button {
+        padding: 10px 20px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .service-card {
+        padding: 1.25rem !important;
+    }
+
+    .service-card h3 {
+        font-size: 1.1rem !important;
+    }
+
+    .service-card p {
+        font-size: 0.85rem !important;
+    }
+
+    #vision .grid > div {
+        padding: 1.25rem !important;
+    }
+
+    #vision h3 {
+        font-size: 1.2rem !important;
+    }
+
+    #vision p {
+        font-size: 0.85rem !important;
+    }
+
+    #loading-screen span:first-child {
+        font-size: 1.8rem !important;
+        padding: 0 20px;
+        text-align: center;
+    }
+
+    #loading-progress {
+        width: 180px;
+    }
+}
+
+/* Tablet - 641px to 1024px */
+@media (min-width: 641px) and (max-width: 1024px) {
+    :root {
+        --carousel-radius: 280px;
+        --slide-width: 200px;
+        --slide-height: 140px;
+    }
+
+    #stellar-carousel {
+        height: 280px;
+    }
+
+    .slide-title {
+        font-size: 1.1rem;
+    }
+
+    .slide-desc {
+        font-size: 0.8rem;
+        padding: 0 10px;
+    }
+
+    .slide-icon {
+        font-size: 1.5rem;
+    }
+
+    .carousel-slide {
+        border-radius: 14px;
+    }
+
+    #carousel-container {
+        padding: 80px 0 40px 0;
+    }
+}
+
+/* Desktop - min-width: 1025px */
+@media (min-width: 1025px) {
+    :root {
+        --carousel-radius: 380px;
+        --slide-width: 280px;
+        --slide-height: 180px;
+    }
+
+    #stellar-carousel {
+        height: 380px;
+    }
+
+    .slide-title {
+        font-size: 1.4rem;
+    }
+
+    .slide-desc {
+        font-size: 1rem;
+    }
+
+    .slide-icon {
+        font-size: 2rem;
+    }
+
+    #carousel-container {
+        padding: 100px 0 50px 0;
+    }
+
+    .service-card:hover {
+        transform: translateY(-10px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
+    }
+
+    .nav-btn:hover,
+    .nav-btn:focus {
+        background: var(--cosmic-purple);
+        color: #fff;
+        box-shadow: 0 0 24px var(--glass-accent);
+        transform: scale(1.08);
+    }
+}
+
+/* Large Desktop - min-width: 1400px */
+@media (min-width: 1400px) {
+    :root {
+        --carousel-radius: 420px;
+        --slide-width: 320px;
+        --slide-height: 220px;
+    }
+
+    #stellar-carousel {
+        height: 420px;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

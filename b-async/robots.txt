@@ -1,0 +1,92 @@
+# ============================================
+# b-async Website - Robots Configuration
+# ============================================
+
+# Google Bot - Tüm sayfaları tarayabilir
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing Bot
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Diğer botlar
+User-agent: *
+Allow: /
+Crawl-delay: 1
+
+# ============================================
+# Disallow - Tarama Yasağı
+# ============================================
+
+# Admin ve özel dizinler
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /tmp/
+Disallow: /backup/
+
+# Dosya ve klasörler
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /node_modules/
+Disallow: /dist/
+
+# Config ve environment dosyaları
+Disallow: /*.env
+Disallow: /*.config
+Disallow: /.htaccess
+Disallow: /web.config
+
+# Source map dosyaları
+Disallow: /*.js.map
+Disallow: /*.css.map
+Disallow: /*.map
+
+# Backup dosyaları
+Disallow: /*.bak
+Disallow: /*.backup
+Disallow: /*.old
+Disallow: /*.tmp
+
+# Gizli dosyalar
+Disallow: /.*
+
+# Development ve test dosyaları
+Disallow: /test/
+Disallow: /tests/
+Disallow: /.env
+Disallow: /.env.local
+Disallow: /.env.*.local
+
+# Database dosyaları
+Disallow: /*.sql
+Disallow: /*.db
+Disallow: /*.sqlite
+
+# API endpoints (opsiyonel - API yoksa kaldırabilirsiniz)
+Disallow: /api/
+Disallow: /api/*
+
+# ============================================
+# Sitemap
+# ============================================
+
+Sitemap: https://b-async.com/sitemap.xml
+Sitemap: https://b-async.com/sitemap-index.xml
+
+# ============================================
+# Rate Limiting
+# ============================================
+
+# Yoğun crawling'i kontrol etmek için
+Request-rate: 1 request per 5 seconds
+Visit-time: 0900-2000
+
+# ============================================
+# Cache Rules (Opsiyonel)
+# ============================================
+
+# Cache-control: max-age=86400
