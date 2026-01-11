@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>b-async | Yenilikçi Yazılım Çözümleri</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* 3D Slider için özel stiller */
+        #slider-container {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+        
+        .slider-item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            transition: transform 1s ease, opacity 1s ease;
+            backface-visibility: visible;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        
+        /* 3D Küp animasyonu */
+        .cube-container {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            animation: rotateCube 20s infinite linear;
+        }
+        
+        .cube-face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, rgba(30, 58, 138, 0.8), rgba(76, 29, 149, 0.8));
+            border: 2px solid rgba(124, 58, 237, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            backface-visibility: visible;
+        }
+        
+        .cube-face.front { transform: translateZ(100px); }
+        .cube-face.back { transform: rotateY(180deg) translateZ(100px); }
+        .cube-face.right { transform: rotateY(90deg) translateZ(100px); }
+        .cube-face.left { transform: rotateY(-90deg) translateZ(100px); }
+        .cube-face.top { transform: rotateX(90deg) translateZ(100px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(100px); }
+        
+        @keyframes rotateCube {
+            0% { transform: rotateX(0) rotateY(0); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+        
+        /* Hover efektleri */
+        .service-card:hover {
+            transform: translateY(-10px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
+        }
+        
+        /* Scrollbar özelleştirme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 4px;
+        }
+        
+        /* Animasyonlar */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        /* Yumuşak geçişler */
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-gray-900/90 backdrop-blur-md z-50 border-b border-gray-800">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold">
+                        <span class="text-blue-500">b</span>
+                        <span class="text-purple-500">-async</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="hover:text-blue-400 transition-all">Ana Sayfa</a>
+                    <a href="#services" class="hover:text-blue-400 transition-all">Hizmetlerimiz</a>
+                    <a href="#vision" class="hover:text-blue-400 transition-all">Vizyon & Misyon</a>
+                    <a href="#about" class="hover:text-blue-400 transition-all">Hakkımızda</a>
+                    <a href="#contact" class="hover:text-blue-400 transition-all">İletişim</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-2 px-6 rounded-lg transition-all">
+                        Demo Talebi
+                    </button>
+                    <button class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with 3D Slider -->
+    <section id="home" class="pt-24 pb-16 md:pt-32 md:pb-24 px-6">
+        <div class="container mx-auto">
+            <div class="flex flex-col lg:flex-row items-center justify-between">
+                <div class="lg:w-1/2 mb-12 lg:mb-0 animate-fadeInUp">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">
+                        <span class="text-blue-400">Geleceğin</span> 
+                        <span class="text-white">Yazılım Çözümleri</span>
+                    </h1>
+                    <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                        b-async olarak, kurumsal ihtiyaçlarınıza özel, yüksek performanslı ve ölçeklenebilir yazılım çözümleri sunuyoruz. Modern teknolojilerle iş süreçlerinizi dönüştürün.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-8 rounded-lg transition-all flex items-center">
+                            <i class="fas fa-play-circle mr-2"></i> Demo İzle
+                        </button>
+                        <button class="bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-8 rounded-lg transition-all border border-gray-700">
+                            Daha Fazla Bilgi
+                        </button>
+                    </div>
+                    
+                    <div class="mt-12 grid grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-blue-400">250+</div>
+                            <div class="text-gray-400">Tamamlanan Proje</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-purple-400">50+</div>
+                            <div class="text-gray-400">Mutlu Müşteri</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-green-400">7/24</div>
+                            <div class="text-gray-400">Teknik Destek</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 3D Slider -->
+                <div class="lg:w-1/2">
+                    <div id="slider-container" class="relative h-96 w-full mx-auto">
+                        <!-- 3D Slider items -->
+                        <div class="slider-item active" id="slide-1" style="transform: translateZ(0px); opacity: 1; background: linear-gradient(135deg, #0f172a, #1e3a8a);">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center p-8">
+                                <div class="cube-container mb-6">
+                                    <div class="cube-face front"><i class="fas fa-code"></i></div>
+                                    <div class="cube-face back"><i class="fas fa-cloud"></i></div>
+                                    <div class="cube-face right"><i class="fas fa-database"></i></div>
+                                    <div class="cube-face left"><i class="fas fa-mobile-alt"></i></div>
+                                    <div class="cube-face top"><i class="fas fa-shield-alt"></i></div>
+                                    <div class="cube-face bottom"><i class="fas fa-chart-line"></i></div>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-2">3D Modelleme</h3>
+                                <p class="text-center text-gray-300">Gelişmiş 3D görselleştirme ile yazılım çözümlerimizi hayata geçiriyoruz</p>
+                            </div>
+                        </div>
+                        
+                        <div class="slider-item" id="slide-2" style="transform: translateZ(-100px) rotateY(-20deg); opacity: 0.7; background: linear-gradient(135deg, #1e3a8a, #3730a3);">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center p-8">
+                                <div class="text-6xl mb-6 text-blue-400">
+                                    <i class="fas fa-laptop-code"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-2">Frontend Geliştirme</h3>
+                                <p class="text-center text-gray-300">Modern framework'ler ile kullanıcı dostu arayüzler</p>
+                            </div>
+                        </div>
+                        
+                        <div class="slider-item" id="slide-3" style="transform: translateZ(-200px) rotateY(-40deg); opacity: 0.5; background: linear-gradient(135deg, #3730a3, #5b21b6);">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center p-8">
+                                <div class="text-6xl mb-6 text-purple-400">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-2">Backend Sistemleri</h3>
+                                <p class="text-center text-gray-300">Yüksek performanslı ve güvenli sunucu çözümleri</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Slider navigasyon -->
+                        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+                            <button class="slider-dot w-3 h-3 rounded-full bg-blue-500" data-slide="0"></button>
+                            <button class="slider-dot w-3 h-3 rounded-full bg-gray-600" data-slide="1"></button>
+                            <button class="slider-dot w-3 h-3 rounded-full bg-gray-600" data-slide="2"></button>
+                        </div>
+                        
+                        <button id="prev-slide" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800/70 hover:bg-gray-800 text-white p-3 rounded-full z-10">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="next-slide" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800/70 hover:bg-gray-800 text-white p-3 rounded-full z-10">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hizmetlerimiz Section -->
+    <section id="services" class="py-16 px-6 bg-gray-800/30">
+        <div class="container mx-auto">
+            <div class="text-center mb-16 animate-fadeInUp">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Hizmetlerimiz</h2>
+                <p class="text-gray-400 max-w-3xl mx-auto">Modern teknolojilerle sunduğumuz kapsamlı yazılım hizmetleri</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card bg-gray-800/50 p-8 rounded-xl border border-gray-700 transition-all">
+                    <div class="text-blue-400 text-4xl mb-6">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Frontend Geliştirme</h3>
+                    <p class="text-gray-400 mb-6">
+                        React, Vue.js ve Angular gibi modern framework'ler ile responsive, hızlı ve kullanıcı dostu arayüzler geliştiriyoruz.
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Progressive Web Apps (PWA)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Single Page Applications (SPA)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Mobil Uyumlu Tasarım</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="service-card bg-gray-800/50 p-8 rounded-xl border border-gray-700 transition-all">
+                    <div class="text-purple-400 text-4xl mb-6">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Backend Geliştirme</h3>
+                    <p class="text-gray-400 mb-6">
+                        Node.js, Python, .NET ve Java teknolojileri ile ölçeklenebilir, güvenli ve yüksek performanslı API ve sunucu sistemleri.
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Mikroservis Mimarisi</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>REST & GraphQL API'lar</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Veritabanı Optimizasyonu</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="service-card bg-gray-800/50 p-8 rounded-xl border border-gray-700 transition-all">
+                    <div class="text-green-400 text-4xl mb-6">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Bulut Çözümleri</h3>
+                    <p class="text-gray-400 mb-6">
+                        AWS, Azure ve Google Cloud platformlarında kurumsal bulut altyapıları, migrasyon ve yönetim hizmetleri.
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Bulut Migrasyon</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Serverless Mimari</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>DevOps & CI/CD</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vizyon & Misyon Section -->
+    <section id="vision" class="py-16 px-6">
+        <div class="container mx-auto">
+            <div class="text-center mb-16 animate-fadeInUp">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Vizyon & Misyon</h2>
+                <p class="text-gray-400 max-w-3xl mx-auto">b-async olarak gelecek hedeflerimiz ve temel ilkelerimiz</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Vizyon -->
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-xl border border-gray-700">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-900/30 p-4 rounded-xl mr-4">
+                            <i class="fas fa-eye text-blue-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Vizyonumuz</h3>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        Teknoloji ve inovasyonun sınırlarını zorlayarak, dünya çapında tanınan ve güvenilen bir yazılım çözümleri şirketi olmak. Sektördeki gelişmeleri yakından takip ederek, müşterilerimize her zaman en güncel ve verimli çözümleri sunmayı hedefliyoruz.
+                    </p>
+                    <div class="bg-gray-800/50 p-4 rounded-lg">
+                        <h4 class="font-bold text-blue-300 mb-2">2025 Hedeflerimiz</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <i class="fas fa-rocket text-blue-500 mr-2"></i>
+                                <span>Avrupa pazarına açılmak</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-users text-blue-500 mr-2"></i>
+                                <span>Çalışan sayımızı ikiye katlamak</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-trophy text-blue-500 mr-2"></i>
+                                <span>En az 3 ödül kazanmak</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Misyon -->
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-xl border border-gray-700">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-purple-900/30 p-4 rounded-xl mr-4">
+                            <i class="fas fa-bullseye text-purple-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Misyonumuz</h3>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        Müşterilerimizin dijital dönüşüm süreçlerinde, en kaliteli yazılım çözümlerini sunarak iş süreçlerini optimize etmek ve rekabet avantajı sağlamak. Etik değerlere bağlı, şeffaf ve sürdürülebilir bir hizmet anlayışı ile sektörde fark yaratmak.
+                    </p>
+                    <div class="bg-gray-800/50 p-4 rounded-lg">
+                        <h4 class="font-bold text-purple-300 mb-2">Temel Değerlerimiz</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <i class="fas fa-handshake text-purple-500 mr-2"></i>
+                                <span>Müşteri memnuniyeti odaklılık</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-lightbulb text-purple-500 mr-2"></i>
+                                <span>Sürekli inovasyon</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-heart text-purple-500 mr-2"></i>
+                                <span>Takım çalışması ve saygı</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-12 px-6">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="text-2xl font-bold mb-4">
+                        <span class="text-blue-500">b</span>
+                        <span class="text-purple-500">-async</span>
+                    </div>
+                    <p class="text-gray-400 max-w-md">
+                        Kurumsal yazılım çözümlerinde lider firma. Modern teknolojilerle işinizi geleceğe taşıyoruz.
+                    </p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-blue-400 text-xl">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 text-xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-purple-400 text-xl">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-red-400 text-xl">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+                <p>&copy; 2023 b-async Yazılım Ltd. Şti. Tüm hakları saklıdır.</p>
+                <p class="mt-2 text-sm">Bu site Tailwind CSS ile geliştirilmiştir.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 3D Slider JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slider-item');
+            const dots = document.querySelectorAll('.slider-dot');
+            const prevBtn = document.getElementById('prev-slide');
+            const nextBtn = document.getElementById('next-slide');
+            let currentSlide = 0;
+            
+            // Başlangıç durumunu ayarla
+            updateSlider();
+            
+            // Sonraki slayt fonksiyonu
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                updateSlider();
+            }
+            
+            // Önceki slayt fonksiyonu
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                updateSlider();
+            }
+            
+            // Slider güncelleme fonksiyonu
+            function updateSlider() {
+                // Tüm slaytları sıfırla
+                slides.forEach((slide, index) => {
+                    let transformValue, opacityValue;
+                    
+                    if (index === currentSlide) {
+                        // Aktif slayt
+                        transformValue = 'translateZ(0px) rotateY(0deg)';
+                        opacityValue = 1;
+                    } else if (index === (currentSlide + 1) % slides.length) {
+                        // Sağdaki slayt
+                        transformValue = 'translateZ(-100px) rotateY(-20deg)';
+                        opacityValue = 0.7;
+                    } else {
+                        // Soldaki slayt
+                        transformValue = 'translateZ(-200px) rotateY(-40deg)';
+                        opacityValue = 0.5;
+                    }
+                    
+                    slide.style.transform = transformValue;
+                    slide.style.opacity = opacityValue;
+                });
+                
+                // Noktaları güncelle
+                dots.forEach((dot, index) => {
+                    if (index === currentSlide) {
+                        dot.classList.add('bg-blue-500');
+                        dot.classList.remove('bg-gray-600');
+                    } else {
+                        dot.classList.remove('bg-blue-500');
+                        dot.classList.add('bg-gray-600');
+                    }
+                });
+            }
+            
+            // Olay dinleyicileri
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+            
+            // Nokta tıklamaları
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentSlide = index;
+                    updateSlider();
+                });
+            });
+            
+            // Otomatik slayt geçişi (5 saniyede bir)
+            setInterval(nextSlide, 5000);
+            
+            // Mobil menü toggle
+            const mobileMenuBtn = document.querySelector('button.md\\:hidden');
+            const navLinks = document.querySelector('.hidden.md\\:flex');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('hidden');
+                navLinks.classList.toggle('flex');
+                navLinks.classList.toggle('flex-col');
+                navLinks.classList.toggle('absolute');
+                navLinks.classList.toggle('top-16');
+                navLinks.classList.toggle('left-0');
+                navLinks.classList.toggle('w-full');
+                navLinks.classList.toggle('bg-gray-900');
+                navLinks.classList.toggle('p-6');
+                navLinks.classList.toggle('space-y-4');
+            });
+            
+            // Scroll animasyonları
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fadeInUp');
+                    }
+                });
+            }, observerOptions);
+            
+            // Gözlemlemek istediğiniz elementleri seçin
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
